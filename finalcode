@@ -1,0 +1,235 @@
+#include <Adafruit_NeoPixel.h> // includes the NeoPixel library
+#include <Servo.h> // includes the Servo library
+#include <Keypad.h> // includes Keypad library
+
+
+const int FlexSensor1 = A0; // names Analog 0 as the pin for the flex sensor 1
+const int FlexSensor2 = A1; // names Analog 1 as the pin for the flex sensor 2
+const int FlexSensor3 = A2; // names Analog 2 as the pin for the flex sensor 3
+const int FlexSensor4 = A3; // names Analog 3 as the pin for the flex sensor 4
+const int FlexSensor5 = A4; // names Analog 4 as the pin for the flex sensor 5
+
+int val1; // creates Flex Sensor data variables 
+int val2;
+int val3;
+int val4;
+int val5;
+
+const int Alarm = 10; // names the pin digital 10 as the pin connected to the active buzzer
+
+
+int pos = 0; // defines neutral Servo position
+
+Servo Servo1; // the Servo will be Servo1
+Servo Servo2; // the Servo will be Servo2
+
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(16, 7, NEO_GRB + NEO_KHZ800); // defines the properties of the NeoPixel ring : number of LED, PIN, colour system and frequency) 
+
+void setup() {
+Serial.begin(9600);
+
+strip.begin();
+strip.show(); // initially turns off all of the pixels
+
+pinMode(FlexSensor1, INPUT); // defines the flex sensors as inputs
+pinMode(FlexSensor2, INPUT);
+pinMode(FlexSensor3, INPUT);
+pinMode(FlexSensor4, INPUT);
+pinMode(FlexSensor5, INPUT);
+
+pinMode(Alarm, OUTPUT);
+
+Servo1.attach(11); // defines the PIN 11 as attached to Servo 1
+Servo1.write(90); // sets the initial Servo position to 90°
+Servo2.attach(12);
+Servo2.write(90);
+
+}
+
+void loop() {
+
+
+val1=analogRead(FlexSensor1); // read the values given by the Flex sensors
+val2=analogRead(FlexSensor2);
+val3=analogRead(FlexSensor3);
+val4=analogRead(FlexSensor4); 
+val5=analogRead(FlexSensor5); 
+
+
+  Serial.println("Flex 1=");
+  Serial.println(val1); // print the Flex sensor values on the Serial plotter
+  
+  Serial.println("Flex 2=");
+  Serial.println(val2);
+  
+  Serial.println("Flex 3=");
+  Serial.println(val3);
+  
+  Serial.println("Flex 4=");
+  Serial.println(val4);
+  
+  Serial.println("Flex 5=");
+  Serial.println(val5); 
+
+ 
+if (val1>40) { // the values have been adjusted to each flex sensor. This one was defective but I made it work by changing the criteria.
+
+  {
+    for(int i=0;i<16;i++){
+
+   strip.setPixelColor(i, strip.Color(76,0,153)); // Dark purple color
+
+   strip.setBrightness(110);
+
+   strip.show(); // This sends the updated pixel color to the hardware.
+   
+   delay(50); // Delay for a period of time (in milliseconds).
+
+   digitalWrite(Alarm, HIGH); // turn the active buzzer on for 100 ms
+  
+   delay(100);
+  
+   digitalWrite(Alarm, LOW); // turn the active buzzer off for 300 ms
+  
+   delay(300);
+  }
+  
+  
+if (val2>1000)
+
+  {
+    for(int i=0;i<16;i++){
+
+   strip.setPixelColor(i, strip.Color(0,102,102)); // Blue-green color
+
+   strip.setBrightness(110);
+
+   strip.show(); // This sends the updated pixel color to the hardware.
+
+    delay(50); // Delay for a period of time (in milliseconds).
+  }
+
+   digitalWrite(Alarm, HIGH); // turn the active buzzer on for 150 ms
+  
+   delay(150);
+  
+   digitalWrite(Alarm, LOW); // turn the active buzzer off for 250 ms
+  
+   delay(250);
+}
+
+if (val3>1000)
+  {
+    for(int i=0;i<16;i++){
+
+   strip.setPixelColor(i, strip.Color(255,255,0)); // Bright yellow color
+
+   strip.setBrightness(110);
+
+   strip.show(); // This sends the updated pixel color to the hardware.
+
+    delay(50); // Delay for a period of time (in milliseconds).
+}
+   
+   digitalWrite(Alarm, HIGH); // turn the active buzzer on for 200 ms
+  
+   delay(200);
+  
+   digitalWrite(Alarm, LOW); // turn the active buzzer off for 200 ms
+  
+   delay(200);
+}
+
+if (val4>1000)
+
+  {
+    for(int i=0;i<16;i++){
+
+   strip.setPixelColor(i, strip.Color(255,128,0)); // Moderately bright orange color
+
+   strip.setBrightness(110);
+
+   strip.show(); // This sends the updated pixel color to the hardware.
+
+    delay(50); // Delay for a period of time (in milliseconds).
+}
+
+   digitalWrite(Alarm, HIGH); // turn the active buzzer on for 250 ms
+  
+   delay(250);
+  
+   digitalWrite(Alarm, LOW); // turn the active buzzer off for 150 ms
+  
+   delay(150);
+
+}
+
+if (val5>500)
+  {
+    for(int i=0;i<16;i++){
+
+   strip.setPixelColor(i, strip.Color(255,0,0)); // Bright red color
+
+   strip.setBrightness(110);
+
+   strip.show(); // This sends the updated pixel color to the hardware.
+
+   delay(50); // Delay for a period of time (in milliseconds).
+}
+
+   digitalWrite(Alarm, HIGH); // turn the active buzzer on for 300 ms
+  
+   delay(300);
+  
+   digitalWrite(Alarm, LOW); // turn the active buzzer off for 100 ms
+  
+   delay(100);
+   
+}
+
+if (val1<1000, val2>=1000, val3>=1000, val4>=1000, val5>=1000)
+
+  {
+   for(int i=0;i<16;i++){
+   int x;
+   while(true) // Loop forever
+  {
+    for (x=0; x < 3; x++) // Blinks 3 times
+    {
+      for(int i=0; i<strip.numPixels(); i++) {strip.setPixelColor(i, strip.Color(255, 255, 255));} // blinks in white
+      strip.setBrightness(255);
+      strip.show(); // Turn LED ON
+      delay(250);
+      
+      for(int i=0; i<strip.numPixels(); i++) {strip.setPixelColor(i, 0);}
+      strip.show(); // Turn LED OFF
+      delay(250);
+
+    for(int i=0;i<16;i++){
+
+    strip.setPixelColor(i, strip.Color(255,255,255)); // Bright white.
+
+    strip.show(); // This sends the updated pixel color to the hardware.
+
+
+    }
+}
+
+   digitalWrite(Alarm, HIGH); // turn the active buzzer on for 400 ms
+  
+   delay(400);
+  
+   digitalWrite(Alarm, LOW); // turn the active buzzer off for 20 ms
+  
+   delay(20);
+   
+}
+
+  int angle1 = map(val1,380,600,10,170); // change the range from analog reading (380 to 600) to values matching Servo angles (10 to 170°). Depends on the sensor.
+  Servo1.write(angle1); // move the servo to that angle
+
+  int angle2 = map(val2,50,296,10,170);
+  Servo2.write(angle2);
+
+  delay(50);
+   }}}}}
